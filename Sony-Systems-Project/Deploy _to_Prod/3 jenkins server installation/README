@@ -1,0 +1,47 @@
+# Jenkins Installation Script for Amazon Linux 2
+This is 3 Jenkins servers for Prod, UAT and Dev teams......
+
+This script automates the installation of Jenkins on an Amazon Linux 2 EC2 instance using Amazon Corretto 17 as the Java runtime environment. Jenkins is a popular automation server that helps streamline the software development and deployment process.
+
+## Prerequisites
+
+Before running this script, ensure that you have:
+
+1. An Amazon Linux 2 EC2 instance launched and accessible via SSH.
+2. Appropriate permissions to execute the script.
+
+## Usage
+
+1. SSH into your Amazon Linux 2 instance.
+
+2. Clone this repository to your instance or create a new script file and paste the contents of the script.
+
+3. Make the script executable:
+
+    ```bash
+    chmod +x install_jenkins.sh
+    ```
+
+4. Run the script as the root user or with `sudo`:
+
+    ```bash
+    sudo ./install_jenkins.sh
+    ```
+
+5. Follow the on-screen prompts and wait for the script to complete the installation.
+
+6. Once the script finishes, Jenkins should be installed and running on your instance.
+
+## What Does the Script Do?
+
+- Updates the package manager and upgrades the existing packages.
+- Adds the Jenkins repository to the YUM configuration.
+- Imports the Jenkins GPG key to verify package integrity.
+- Installs Java 17 using Amazon Corretto.
+- Installs Jenkins from the Jenkins repository.
+- Enables and starts the Jenkins service.
+
+## Accessing Jenkins
+
+After running the script successfully, Jenkins should be accessible through a web browser at:
+

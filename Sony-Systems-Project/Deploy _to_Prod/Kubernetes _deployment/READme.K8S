@@ -1,0 +1,116 @@
+Sony Systems Project Kubernetes Deployment
+
+Overview
+
+This document provides the Kubernetes deployment setup for the Sony Systems Project Flask application.
+It includes configurations for Deployment, Service, Ingress, Horizontal Pod Autoscaler (HPA), and health checks to ensure high availability and efficient resource utilization.
+
+The following deployment files are listed below:
+
+1. Deployment YAML (deployment.yaml)
+
+2. Service YAML (service.yaml)
+The Service configuration exposes the Flask application to external traffic using a LoadBalancer.
+
+3. Ingress YAML (ingress.yaml)
+(Optional) The Ingress configuration allows you to route traffic to your service.
+If using a LoadBalancer type Service, this might be redundant unless internal routing or specific domain configurations are required.
+
+
+4. Horizontal Pod Autoscaler (HPA) YAML (hpa.yaml)
+The HPA configuration automatically scales the number of pods based on CPU utilization.
+
+
+
+Applying the Configurations
+
+To apply the Kubernetes configurations, run the following commands:
+
+bash
+Copy code
+kubectl apply -f kubernetes_deployment/deployment.yaml
+kubectl apply -f kubernetes_deployment/service.yaml
+kubectl apply -f kubernetes_deployment/ingress.yaml  # Optional, if using Ingress
+kubectl apply -f kubernetes_deployment/hpa.yaml
+
+
+Accessing Your Application
+
+Check the LoadBalancer External IP
+After applying the Service YAML, get the external IP assigned to your LoadBalancer service:
+
+To use ingress controller Helm and NGinx needs to be installed.
+Prerequisite. Helm
+
+Helm Installation and Chart Deployment Script
+
+This script assumes you have kubectl and helm installed locally and configured to interact with your Kubernetes cluster.
+It covers Helm installation and deploying an example Helm chart.
+Make It Executable:
+Make the script executable by running:
+bash
+Copy code
+chmod +x install_helm_and_nginx.sh
+
+Run the Script:
+
+./install_helm_and_nginx.sh
+
+
+
+NGINX Ingress Controller Installation
+
+If you are using the NGINX Ingress Controller, follow these steps for installation:
+
+bash
+Copy code
+# Add the Ingress NGINX Helm repository
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+# Install the NGINX Ingress Controller
+helm install nginx-ingress ingress-nginx/ingress-nginx
+
+bash
+Copy code
+kubectl get service sony-systems-service
+The output will include an EXTERNAL-IP field that you can use to access your application.
+
+Access Your Application
+Open a web browser and navigate to the EXTERNAL-IP obtained from the previous step.
+ If using a domain name with the Ingress, update your DNS settings accordingly to point to the LoadBalancer IP.
+
+Summary
+
+This setup ensures that your Flask application is highly available and can handle varying loads efficiently.
+The LoadBalancer type Service provides external access, while the Horizontal Pod Autoscaler adjusts the number of pods based
+on resource utilization. Health checks ensure that traffic is only routed to healthy pods, and the NGINX Ingress Controller can be used for additional routing needs.
+
+
+Post deployment  monitoring
+
+ Kubernetes Monitoring Setup with Prometheus and Grafana
+
+This guide provides instructions for deploying Prometheus and Grafana on your Kubernetes cluster using Helm. Prometheus is used for monitoring and alerting, while Grafana is used for visualization of metrics.
+
+## Prerequisites
+
+- A Kubernetes cluster
+- Helm installed and configured on your local machine
+- `kubectl` installed and configured to access your Kubernetes cluster
+
+## 1. Add Helm Repositories
+
+Before deploying Prometheus and Grafana, add the Helm repositories for these applications.
+
+```bash
+# Add the Prometheus Helm repository
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+# Add the Grafana Helm repository
+helm repo add grafana https://grafana.github.io/helm-charts
+
+# Update Helm repositories
+helm repo update
+
+
+Or run the script in the folder.

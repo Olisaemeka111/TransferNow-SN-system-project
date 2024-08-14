@@ -1,0 +1,79 @@
+Prerequisite:
+Docker engine installed, Docker hub account , Kubernetes infrastructure
+
+
+Operation commands
+
+docker build -f Dockerfile -t myimage .   #to build the docker image of the application
+
+docker images                                ##to list all the images already built
+
+docker run -p 8010:5000 <IMAGE ID>          ##to start and run the container with the image Id
+
+http://localhost:8010                       ##to access the image locally
+
+
+
+
+## To push to docker hub
+
+docker tag myimage:latest olisaemeka111/sn-systems-project:latest
+docker push olisaemeka111/sn-systems-project:latest
+
+
+ ##To pull the image for deployment to Kubernetes
+
+ docker pull olisaemeka111/sn-systems-project:latest.
+
+
+ ## Maintenance
+ To update the service, modify the code and rebuild the Docker image using the commands above.
+ Run the update script periodically to update the dependencies or set up an automated cronjob.
+
+ chmod +x update_dependencies.sh
+ ./update_dependencies.sh
+
+ To maintain optimal performance of the Flask application, periodic maintenance should include monitoring, updating, and optimizing various aspects of the application and its environment. Here's a detailed breakdown of the maintenance processes:
+
+ 1. Performance Monitoring post deployment
+ Logs Management: Regularly monitor the application logs to identify any potential issues or performance bottlenecks. Implement log rotation to prevent logs from consuming too much disk space.
+ Metrics Collection: Use monitoring tools like Prometheus or Grafana to collect metrics such as response time, request rates, and error rates. This helps in identifying performance degradation over time.
+ Health Checks: Implement health checks for the application to ensure it’s running smoothly. This can include checking the response time and ensuring the application is responding to requests properly.
+
+ 2. Security Updates
+ Library Updates: Regularly update the Python libraries and dependencies used in your application, including Flask and hashlib, to ensure you are protected against known vulnerabilities.
+ Security Patches: Keep the operating system and Docker environment updated with the latest security patches.
+ SSL/TLS Certificates: Although not initially required, if you add HTTPS support, ensure SSL/TLS certificates are kept up-to-date and renewed as needed.
+
+ 3. Resource Optimization
+ Memory and CPU Usage: Monitor and optimize the memory and CPU usage of the application. If the application is resource-intensive, consider optimizing the code, such as by using more efficient algorithms or by offloading tasks to background workers.
+ File Size Limits: Implement file size restrictions to avoid processing overly large files, which could lead to performance degradation. Adjust these limits based on your server’s capacity.
+ Docker Container Optimization: Regularly rebuild and update the Docker image to ensure it uses the latest dependencies and is optimized for performance. Remove any unnecessary files from the image to reduce its size.
+
+ 4. Scaling and Load Management
+ Auto-scaling: Implement auto-scaling policies if the application is deployed in a production environment to handle increased traffic.
+ Load Balancing: If the application is scaled across multiple instances, implement load balancing to distribute the traffic evenly.
+ Caching: Introduce caching mechanisms for frequently requested files or results to reduce load on the server.
+
+ 5. Backup and Disaster Recovery
+ Regular Backups: Even though files don’t need to be stored long-term, if you decide to keep temporary backups, ensure they are periodically cleared to save space and that there’s a disaster recovery plan in place.
+ Disaster Recovery Plan: Develop a disaster recovery plan to restore the service quickly in case of a failure, including automated container recovery and backup restoration.
+
+ 6. Database Maintenance (if applicable)
+ Database Optimization: If you decide to store any data related to the files or users, ensure the database is regularly optimized, with indexes maintained and queries optimized.
+ Regular Backups: Ensure regular backups of the database, and test the restore process periodically.
+
+ 7. Application Updates
+ Feature Enhancements: Regularly update the application with new features or improvements based on user feedback and performance data.
+ Testing: Before deploying updates, conduct thorough testing in a staging environment to prevent any disruptions to the service.
+
+ 8. Documentation
+ Update Documentation: Ensure that all documentation, including deployment, maintenance, and operational procedures, is kept up-to-date with any changes made to the application or infrastructure.
+ Knowledge Sharing: Regularly review and share knowledge with your team about the application’s performance, updates, and any issues encountered.
+ By following these maintenance processes, you can ensure that your Flask application remains performant, secure, and reliable over time.
+
+
+
+
+
+

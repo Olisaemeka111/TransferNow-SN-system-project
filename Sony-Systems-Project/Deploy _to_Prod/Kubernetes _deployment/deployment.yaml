@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sony-systems-project
+  labels:
+    app: sony-systems-project
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sony-systems-project
+  template:
+    metadata:
+      labels:
+        app: sony-systems-project
+    spec:
+      containers:
+        - name: sony-systems-project
+          image: olisaemeka111/sn-systems-project:latest
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 20
+            failureThreshold: 3

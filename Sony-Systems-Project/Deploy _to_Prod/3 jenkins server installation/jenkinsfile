@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = "https://index.docker.io/v1/" // Docker Hub's default registry URL
+        REPO = "olisaemeka111/sn-systems-project" // Repository name on Docker Hub
+        IMAGE = "${REPO}:${env.BUILD_NUMBER}" // Tag image with the build number
+        KUBE_CONFIG = credentials('kube-config') // Jenkins credential ID for kubeconfig
+        DOCKER_REGISTRY_USERNAME = credentials('docker-registry-username') // Jenkins credential ID for Docker registry username
+        DOCKER_REGISTRY_PASSWORD = credentials('docker-registry-password') // Jenkins credential ID for Docker registry password
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pull the latest code from your Git repository
+                git branch: 'main', url: 'https://github.com/olisaemeka111/sn-systems-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    sh "docker build -t ${IMAGE} ."
+                }
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Log in to Docker registry
+                    sh "echo ${DOCKER_REGISTRY_PASSWORD} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin"
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image to the registry
+                    sh "docker push ${IMAGE}"
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                withKubeConfig([credentialsId: env.KUBE_CONFIG]) {
+                    script {
+                        // Apply Kubernetes manifests from the kubernetes_deployment folder
+                        sh """
+                        kubectl apply -f kubernetes_deployment/deployment.yaml
+                        kubectl apply -f kubernetes_deployment/service.yaml
+                        kubectl apply -f kubernetes_deployment/ingress.yaml
+                        """
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up Docker images to save space
+            sh 'docker rmi ${IMAGE} || true'
+        }
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}
